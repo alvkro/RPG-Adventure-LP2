@@ -1,5 +1,3 @@
-package com.rpgadventure;
-
 import java.util.ArrayList;
 
 public class Character {
