@@ -1,14 +1,14 @@
-public class Missao {
+public class Mission {
   private final String title;
-  private final Recompensa reward;
+  private final Reward reward;
   private boolean is_done = false;
 
-  public Missao(String title, Recompensa reward) {
+  public Mission(String title, Reward reward) {
     this.title = title;
     this.reward = reward;
   }
 
-  public Recompensa doMission() {
+  public Reward doMission() {
     is_done = true;
 
     return reward;

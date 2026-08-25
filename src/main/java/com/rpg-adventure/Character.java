@@ -1,9 +1,9 @@
-public class Personagem {
+public class Character {
   private String name;
   private int level;
   private int coins;
 
-  public Personagem(String name, int coins) {
+  public Character(String name, int coins) {
     this.name = name;
     this.coins = coins;
     this.level = 1;
@@ -17,7 +17,7 @@ public class Personagem {
     System.out.println("Talking...");
   }
 
-  public void receive(Recompensa r) {
+  public void receive(Reward r) {
     this.coins += r.getCoin();
   }
 }
