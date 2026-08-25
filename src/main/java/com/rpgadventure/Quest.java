@@ -6,6 +6,9 @@ public class Quest {
   private QuestState questState = QuestState.AVAILABLE;
 
   public Quest(String title, String description, Reward reward, Item required_item) {
+    if (title == null || title.isBlank())
+      throw new IllegalArgumentException("Title cannot be null or empty.");
+
     this.title = title;
     this.description = description;
     this.reward = reward;
@@ -13,16 +16,29 @@ public class Quest {
   }
 
   public void obtainQuest() {
+    if (this.questState != QuestState.AVAILABLE)
+      throw new IllegalStateException("You cannot obtain this quest right now.");
+
     this.questState = QuestState.IN_PROGRESS;
   }
 
-  public Reward completeQuest() {
+  public Reward completeQuest(Inventory inventory) {
+    if (this.questState != QuestState.IN_PROGRESS)
+      throw new IllegalStateException("You cannot complete a mission you have not obtained.");
+
+    if (!inventory.hasItem(requiredItem))
+      throw new IllegalStateException("Required item not yet obtained.");
+
     this.questState = QuestState.COMPLETED;
+    inventory.removeItem(requiredItem);
 
     return reward;
   }
 
   public void failQuest() {
+    if (this.questState != QuestState.IN_PROGRESS)
+      throw new IllegalStateException("Cannot fail a mission not in progress.");
+
     this.questState = QuestState.FAILED;
   }
 

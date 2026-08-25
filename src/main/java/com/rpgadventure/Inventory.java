@@ -9,32 +9,33 @@ public class Inventory {
   }
 
   public void insertItem(Item item) {
-    if (items.size() < maxCapacity) {
+    if (item == null)
+      throw new IllegalArgumentException("Item cannot be null.");
+
+    if (items.size() < maxCapacity)
       items.add(item);
-    }
   }
 
   public void removeItem(Item item) {
-    if (items.contains(item)) {
-      items.remove(item);
-    }
+    if (item == null)
+      throw new IllegalArgumentException("Item cannot be null.");
+
+    if (!items.contains(item))
+      throw new IllegalStateException("Item not in inventory.");
+
+    items.remove(item);
   }
 
   public boolean hasItem(Item item) {
-    if (items.contains(item)) {
-      return true;
-    }
-
-    return false;
+    return items.contains(item);
   }
 
   @Override
   public String toString() {
     String stream = "";
 
-    for (Item item : items) {
+    for (Item item : items)
       stream += "Item name: " + item.getName() + "\n";
-    }
 
     return stream;
   }
