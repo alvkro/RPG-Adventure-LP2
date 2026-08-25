@@ -1,7 +1,6 @@
 package com.rpgadventure;
 
 import java.util.ArrayList;
-import main.java.com.rpgadventure.ItemType;
 
 public class Character {
   private String name;

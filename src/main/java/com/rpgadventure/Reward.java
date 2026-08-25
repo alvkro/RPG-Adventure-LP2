@@ -1,3 +1,5 @@
+package com.rpgadventure;
+
 public class Reward {
   private String description;
   private final int coin;

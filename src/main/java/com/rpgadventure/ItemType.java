@@ -1,4 +1,4 @@
-package main.java.com.rpgadventure;
+package com.rpgadventure;
 
 public enum ItemType {
     EQUIPMENT,

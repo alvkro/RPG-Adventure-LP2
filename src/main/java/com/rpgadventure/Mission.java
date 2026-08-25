@@ -1,3 +1,7 @@
+package com.rpgadventure;
+
+import com.rpgadventure.Reward;
+
 public class Mission {
   private final String title;
   private final Reward reward;
