@@ -1,5 +1,3 @@
-package com.rpgadventure;
-
 public enum QuestState{
     AVAILABLE,
     IN_PROGRESS,
