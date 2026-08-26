@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Adventurer {
   private String name;
   private int energy;
