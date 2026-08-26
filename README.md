@@ -1,13 +1,16 @@
 # Documentação Técnica: Estrutura Inicial do jogo
 
-Esta documentação detalha a implementação das estruturas iniciais do sistema de aventura solo.
+Esta documentação detalha a implementação das estruturas iniciais do sistema
+de aventura solo.
 
 ---
 
 ## 1. Enums
 
 ### A. `ItemType.java`
+
 Define os tipos de itens disponíveis no universo do jogo.
+
 ```java
 public enum ItemType {
     EQUIPMENT,
@@ -17,7 +20,9 @@ public enum ItemType {
 ```
 
 ### B. `Rarity.java`
+
 Representa a escala de poder e escassez dos itens do jogo.
+
 ```java
 public enum Rarity {
     COMMON,
@@ -27,7 +32,10 @@ public enum Rarity {
 ```
 
 ### C. `QuestState.java`
-Controla a máquina de estados que governa a execução e as transições das missões (Quests).
+
+Controla a máquina de estados que governa a execução e as transições das
+missões (Quests).
+
 ```java
 public enum QuestState {
     AVAILABLE,
@@ -38,9 +46,9 @@ public enum QuestState {
 
 ---
 
-## 2. Classes 
+## 2. Classes
 
-### Classe `Item` 
+### Classe `Item`
 
 A classe `Item` foi modelada como um **Objeto Imutável (Value Object)**.
 
@@ -79,12 +87,13 @@ public final class Item {
     }
 }
 ```
+
 ---
 
 ### Classe `Reward`
 
-A classe `Reward` representa a recompensa que um aventureiro obtém ao concluir um desafio. Ele pode receber coins (moedas) ou um item do jogo.
-
+A classe `Reward` representa a recompensa que um aventureiro obtém ao concluir
+um desafio. Ele pode receber coins (moedas) ou um item do jogo.
 
 ```java
 public final class Reward {
@@ -117,5 +126,112 @@ public final class Reward {
 
 ---
 
-# Outras classes aqui
+### Classe `Quest`
 
+A classe `Quest` representa missões que um aventureiro pode obter e completar.
+Uma `Quest` requer a entrega de um item e retorna recompensas ao aventureiro.
+
+```java
+public class Quest {
+  private final String title;
+  private final String description;
+  private final Reward reward;
+  private final Item requiredItem;
+  private QuestState questState = QuestState.AVAILABLE;
+
+  public Quest(String title, String description, Reward reward, Item required_item) {
+    if (title == null || title.isBlank())
+      throw new IllegalArgumentException("Title cannot be null or empty.");
+
+    this.title = title;
+    this.description = description;
+    this.reward = reward;
+    this.requiredItem = required_item;
+  }
+
+  public void obtainQuest() {
+    if (this.questState != QuestState.AVAILABLE)
+      throw new IllegalStateException("You cannot obtain this quest right now.");
+
+    this.questState = QuestState.IN_PROGRESS;
+  }
+
+  public Reward completeQuest(Inventory inventory) {
+    if (this.questState != QuestState.IN_PROGRESS)
+      throw new IllegalStateException("You cannot complete a mission you have not obtained.");
+
+    if (!inventory.hasItem(requiredItem))
+      throw new IllegalStateException("Required item not yet obtained.");
+
+    this.questState = QuestState.COMPLETED;
+    inventory.removeItem(requiredItem);
+
+    return reward;
+  }
+
+  public void failQuest() {
+    if (this.questState != QuestState.IN_PROGRESS)
+      throw new IllegalStateException("Cannot fail a mission not in progress.");
+
+    this.questState = QuestState.FAILED;
+  }
+
+  @Override
+  public String toString() {
+    return "Title: " + this.title + "\nDescription: " + this.description
+        + "\nReward: " + this.reward + "\nRequired item: " + this.requiredItem
+        + "\nState: " + this.questState;
+  }
+}
+```
+
+---
+
+### Classe `Inventory`
+
+A classe `Inventory` representa o inventário de um aventureiro. Ela é composta
+dentro da classe `Adventurer`. Possui capacidade máxima e representa a lista de
+itens como uma `ArrayList<Item>`.
+
+```java
+public class Inventory {
+  private final int maxCapacity = 40;
+  private ArrayList<Item> items;
+
+  public Inventory() {
+    this.items = new ArrayList<>();
+  }
+
+  public void insertItem(Item item) {
+    if (item == null)
+      throw new IllegalArgumentException("Item cannot be null.");
+
+    if (items.size() < maxCapacity)
+      items.add(item);
+  }
+
+  public void removeItem(Item item) {
+    if (item == null)
+      throw new IllegalArgumentException("Item cannot be null.");
+
+    if (!items.contains(item))
+      throw new IllegalStateException("Item not in inventory.");
+
+    items.remove(item);
+  }
+
+  public boolean hasItem(Item item) {
+    return items.contains(item);
+  }
+
+  @Override
+  public String toString() {
+    String stream = "";
+
+    for (Item item : items)
+      stream += "Item name: " + item.getName() + "\n";
+
+    return stream;
+  }
+}
+```
