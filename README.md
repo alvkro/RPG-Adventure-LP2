@@ -235,3 +235,52 @@ public class Inventory {
   }
 }
 ```
+
+### Classe `Adventurer`
+
+A classe `Adventurer` representa a instância do jogador. Ela é composta por 
+atributos base de qualquer jogador de RPG, tais como `name`, `level`, `coins` e `energy`.
+[ainda vou fazer mais algumas coisas na classe...]
+```
+public class Adventurer {
+  private String name;
+  private int energy;
+  private int level;
+  private int coins;
+  private Inventory inventory;
+
+  public Adventurer(String name, int coins) {
+    this.name = name;
+    this.coins = coins;
+    this.level = 1;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getLevel() {
+    return level;
+  }
+
+  public int getCoins() {
+    return this.coins;
+  }
+
+  public int getEnergy() {
+    return this.energy;
+  }
+
+  public Inventory getInventory() {
+    return inventory;
+  }
+
+  public void dialogue() {
+    System.out.println("Talking...");
+  }
+
+  public void receive(Reward r) {
+    this.coins += r.getCoin();
+  }
+}
+```
