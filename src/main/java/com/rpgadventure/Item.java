@@ -3,7 +3,7 @@ public final class Item {
     private final ItemType type;
     private final Rarity rarity;
 
-    Item(String name, ItemType type, Rarity rarity) {
+    public Item(String name, ItemType type, Rarity rarity) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Item name cannot be empty or null.");
         }
