@@ -1,41 +1,66 @@
 public class Adventurer {
-  private String name;
-  private int energy;
-  private int level;
-  private int coins;
-  private Inventory inventory;
+    private String name;
+    private int energy;
+    private int level;
+    private int coins;
+    private Inventory inventory;
 
-  public Adventurer(String name, int coins) {
-    this.name = name;
-    this.coins = coins;
-    this.level = 1;
-  }
+    public Adventurer(String name, int coins) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Adventurer name cannot be empty or null.");
+        }
+        if (coins < 0) {
+            throw new IllegalArgumentException("Moedas não podem ser negativas.");
+        }
 
-  public String getName() {
-    return name;
-  }
+        this.name = name;
+        this.coins = coins;
+        this.level = 1;
+        this.energy = 100;
 
-  public int getLevel() {
-    return level;
-  }
+        this.inventory = new Inventory();
+    }
 
-  public int getCoins() {
-    return this.coins;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public int getEnergy() {
-    return this.energy;
-  }
+    public int getLevel() {
+        return level;
+    }
 
-  public Inventory getInventory() {
-    return inventory;
-  }
+    public int getCoins() {
+        return this.coins;
+    }
 
-  public void dialogue() {
-    System.out.println("Talking...");
-  }
+    public int getEnergy() {
+        return this.energy;
+    }
 
-  public void receive(Reward r) {
-    this.coins += r.getCoin();
-  }
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void dialogue() {
+        System.out.println("Talking...");
+    }
+
+    public void receiveReward(Reward r) {
+        if (r.getItemReward() != null) {
+            this.inventory.insertItem(r.getItemReward());
+        }
+        this.coins += r.getCoin();
+    }
+
+    public void completeQuest(Quest quest) {
+        if (quest == null) {
+            throw new IllegalArgumentException("Mission Invalid.");
+        }
+
+        Reward reward = quest.completeQuest(this.inventory);
+
+        if (reward != null) {
+            this.receiveReward(reward);
+        }
+    }
 }
