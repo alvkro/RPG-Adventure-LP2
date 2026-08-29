@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
   public static void main(String[] args) {
 
-    System.out.println(">>> WELCOME TO YOUR ADVENTURE! <<<");
+    System.out.println("\n>>> WELCOME TO YOUR ADVENTURE! <<<");
 
     Item goblinHead = new Item("Goblin's Head", ItemType.COLLECTIBLE, Rarity.COMMON);
     Item healthPotion = new Item("Health Potion", ItemType.CONSUMABLE, Rarity.COMMON);
@@ -28,7 +28,7 @@ public class Main {
             + "> Before setting out, you also got a Health Potion!");
     adventurer.getInventory().insertItem(healthPotion);
 
-    System.out.println(">>> YOUR ADVENTURE BEGINS! <<<");
+    System.out.println("\n>>> YOUR ADVENTURE BEGINS! <<<");
 
     System.out.println("> Just as you set out your village, an old man asks for "
         + "your help by the road...");
@@ -38,7 +38,7 @@ public class Main {
 
     if (choice.equalsIgnoreCase("N") || choice.equalsIgnoreCase("NO")) {
       System.out.println("> You ignore the old man and walk away. The goblin destroys the village later.");
-      System.out.println(">>> GAME OVER <<<");
+      System.out.println("\n>>> GAME OVER <<<");
       scanner.close();
       return;
     }
@@ -65,7 +65,7 @@ public class Main {
     if (combatChoice.equals("1")) {
       System.out.println(
           "> You yell and charge! The smart goblin anticipated this, triggers a hidden trap, and you are crushed by a falling rock.");
-      System.out.println(">>> GAME OVER <<<");
+      System.out.println("\n>>> GAME OVER <<<");
       scanner.close();
       return;
     }
@@ -83,6 +83,8 @@ public class Main {
     System.out.println("\n>>> CONGRATULATIONS! YOU COMPLETED YOUR ADVENTURE! (for now...) <<<");
 
     System.out.println("\n>>> OTHER FUNCTIONALITIES <<<");
+    System.out.println(">> As a reward for being a brave hero, we'll show you "
+        + "how the program works!");
     System.out.println("> Exhibiting validation that prevents invalid states...");
 
     Item testItem = new Item("Dragon Scale", ItemType.COLLECTIBLE, Rarity.LEGENDARY);
