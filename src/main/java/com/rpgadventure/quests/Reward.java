@@ -1,3 +1,7 @@
+package quests;
+
+import equipment.Item;
+
 public final class Reward {
     private final String description;
     private final int coin;
@@ -5,7 +9,7 @@ public final class Reward {
 
     public Reward(String description, int coin, Item itemReward) {
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("Reward description cannot be empty or null.");
+            throw new IllegalArgumentException("quests.Reward description cannot be empty or null.");
         }
         if (coin < 0) {
             throw new IllegalArgumentException("Coin value cannot be negative.");

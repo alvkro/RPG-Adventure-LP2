@@ -1,3 +1,8 @@
+package quests;
+
+import equipment.Inventory;
+import equipment.Item;
+
 public class Quest {
     private final String title;
     private final String description;
@@ -65,7 +70,7 @@ public class Quest {
     @Override
     public String toString() {
         return "Title: " + this.title + "\nDescription: " + this.description
-                + "\nReward: " + this.reward + "\nRequired item: " + this.requiredItem
+                + "\nquests.Reward: " + this.reward + "\nRequired item: " + this.requiredItem
                 + "\nState: " + this.questState;
     }
 }

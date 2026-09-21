@@ -1,3 +1,10 @@
+import entities.Adventurer;
+import equipment.Item;
+import equipment.ItemType;
+import equipment.Rarity;
+import quests.Quest;
+import quests.Reward;
+
 import java.util.Scanner;
 
 public class Main {
@@ -9,7 +16,7 @@ public class Main {
     Item healthPotion = new Item("Health Potion", ItemType.CONSUMABLE, Rarity.COMMON);
     Item ironSword = new Item("Iron Sword", ItemType.EQUIPMENT, Rarity.RARE);
 
-    Reward questReward = new Reward("Quest Reward", 150, ironSword);
+    Reward questReward = new Reward("quests.Quest quests.Reward", 150, ironSword);
     Quest clearCave = new Quest(
         "Clear The Cave",
         "Kill the evil goblin in the cave and bring its head as proof.",
@@ -98,7 +105,7 @@ public class Main {
 
     System.out.println("\n> Final Hero Status:");
     System.out.println("Coins: " + adventurer.getCoins());
-    System.out.println("Inventory:\n" + adventurer.getInventory().toString());
+    System.out.println("equipment.Inventory:\n" + adventurer.getInventory().toString());
 
     scanner.close();
   }

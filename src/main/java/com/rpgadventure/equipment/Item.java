@@ -1,3 +1,5 @@
+package equipment;
+
 public final class Item {
     private final String name;
     private final ItemType type;
@@ -5,13 +7,13 @@ public final class Item {
 
     public Item(String name, ItemType type, Rarity rarity) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Item name cannot be empty or null.");
+            throw new IllegalArgumentException("equipment.Item name cannot be empty or null.");
         }
         if (type == null) {
-            throw new IllegalArgumentException("Item type cannot be null.");
+            throw new IllegalArgumentException("equipment.Item type cannot be null.");
         }
         if (rarity == null) {
-            throw new IllegalArgumentException("Item rarity cannot be null.");
+            throw new IllegalArgumentException("equipment.Item rarity cannot be null.");
         }
 
         this.name = name;
