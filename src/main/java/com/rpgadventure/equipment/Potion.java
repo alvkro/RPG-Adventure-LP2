@@ -1,3 +1,5 @@
+package equipment;
+
 public class Potion extends Item implements Usable {
     private final int treatment;
 

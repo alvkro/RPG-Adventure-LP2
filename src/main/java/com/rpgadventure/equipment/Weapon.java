@@ -1,3 +1,5 @@
+package equipment;
+
 public class Weapon extends Item {
     private final int damage;
 

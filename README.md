@@ -7,36 +7,36 @@ de aventura solo.
 
 ## 1. Enums
 
-### A. `ItemType.java`
+### A. `equipment.ItemType.java`
 
 Define os tipos de itens disponíveis no universo do jogo.
 
 ```java
-public enum ItemType {
+public enum equipment.ItemType {
     EQUIPMENT,
     CONSUMABLE,
     COLLECTIBLE
 }
 ```
 
-### B. `Rarity.java`
+### B. `equipment.Rarity.java`
 
 Representa a escala de poder e escassez dos itens do jogo.
 
 ```java
-public enum Rarity {
+public enum equipment.Rarity {
     COMMON,
     RARE,
     LEGENDARY
 }
 ```
 
-### C. `QuestState.java`
+### C. `quests.QuestState.java`
 
 Controla a máquina de estados que governa a execução e as transições das missões (Quests).
 
 ```java
-public enum QuestState {
+public enum quests.QuestState {
     AVAILABLE,
     IN_PROGRESS,
     COMPLETED
@@ -52,20 +52,20 @@ public enum QuestState {
 A classe `Item` foi modelada como um **Objeto Imutável (Value Object)**. Seus objetos existem de forma independente e participam de relações de **Agregação** com `Inventory`, `Quest` e `Reward`.
 
 ```java
-public final class Item {
+public final class equipment.Item {
     private final String name;
     private final ItemType type;
     private final Rarity rarity;
 
-    public Item(String name, ItemType type, Rarity rarity) {
+    public equipment.Item(String name, ItemType type, Rarity rarity) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Item name cannot be empty or null.");
+            throw new IllegalArgumentException("equipment.Item name cannot be empty or null.");
         }
         if (type == null) {
-            throw new IllegalArgumentException("Item type cannot be null.");
+            throw new IllegalArgumentException("equipment.Item type cannot be null.");
         }
         if (rarity == null) {
-            throw new IllegalArgumentException("Item rarity cannot be null.");
+            throw new IllegalArgumentException("equipment.Item rarity cannot be null.");
         }
 
         this.name = name;
@@ -94,14 +94,16 @@ public final class Item {
 A classe `Reward` representa a recompensa que um aventureiro obtém ao concluir um desafio. Possui uma **Agregação** com `Item` através do atributo `itemReward`.
 
 ```java
-public final class Reward {
+import equipment.Item;
+
+public final class quests.Reward {
     private final String description;
     private final int coin;
     private final Item itemReward;
 
-    public Reward(String description, int coin, Item itemReward) {
+    public quests.Reward(String description, int coin, Item itemReward) {
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("Reward description cannot be empty or null.");
+            throw new IllegalArgumentException("quests.Reward description cannot be empty or null.");
         }
         if (coin < 0) {
             throw new IllegalArgumentException("Coin value cannot be negative.");
@@ -132,14 +134,19 @@ A classe `Quest` representa missões que um aventureiro pode obter e completar. 
 * **Associação** com `Inventory`, recebido via parâmetro no método `completeQuest`.
 
 ```java
-public class Quest {
+
+import equipment.Item;
+
+public class quests.
+
+Quest {
     private final String title;
     private final String description;
     private final Reward reward;
     private final Item requiredItem;
     private QuestState questState = QuestState.AVAILABLE;
 
-    public Quest(String title, String description, Reward reward, Item required_item) {
+    public quests.Quest(String title, String description, Reward reward, Item required_item) {
         if (title == null || title.isBlank())
             throw new IllegalArgumentException("Title cannot be null or empty.");
 
@@ -149,14 +156,14 @@ public class Quest {
         this.requiredItem = required_item;
     }
 
-    public void obtainQuest() {
+    public void obtainQuest () {
         if (this.questState != QuestState.AVAILABLE)
             throw new IllegalStateException("You cannot obtain this quest right now.");
 
         this.questState = QuestState.IN_PROGRESS;
     }
 
-    public Reward completeQuest(Inventory inventory) {
+    public Reward completeQuest (Inventory inventory){
         if (this.questState != QuestState.IN_PROGRESS)
             throw new IllegalStateException("You cannot complete a mission you have not obtained.");
 
@@ -169,37 +176,37 @@ public class Quest {
         return reward;
     }
 
-    public void failQuest() {
+    public void failQuest () {
         if (this.questState != QuestState.IN_PROGRESS)
             throw new IllegalStateException("Cannot fail a mission not in progress.");
 
         this.questState = QuestState.FAILED;
     }
 
-    public String getTitle() {
+    public String getTitle () {
         return title;
     }
 
-    public String getDescription() {
+    public String getDescription () {
         return description;
     }
 
-    public Reward getReward() {
+    public Reward getReward () {
         return reward;
     }
 
-    public Item getRequiredItem() {
+    public Item getRequiredItem () {
         return requiredItem;
     }
 
-    public QuestState getQuestState() {
+    public QuestState getQuestState () {
         return questState;
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "Title: " + this.title + "\nDescription: " + this.description
-                + "\nReward: " + this.reward + "\nRequired item: " + this.requiredItem
+                + "\nquests.Reward: " + this.reward + "\nRequired item: " + this.requiredItem
                 + "\nState: " + this.questState;
     }
 }
@@ -217,17 +224,17 @@ A classe `Inventory` gerencia os itens carregados. Demonstra:
 ```java
 import java.util.ArrayList;
 
-public class Inventory {
+public class equipment.Inventory {
     private final int maxCapacity = 40;
     private ArrayList<Item> items;
 
-    public Inventory() {
+    public equipment.Inventory() {
         this.items = new ArrayList<>();
     }
 
     public void insertItem(Item item) {
         if (item == null)
-            throw new IllegalArgumentException("Item cannot be null.");
+            throw new IllegalArgumentException("equipment.Item cannot be null.");
 
         if (items.size() < maxCapacity)
             items.add(item);
@@ -235,10 +242,10 @@ public class Inventory {
 
     public void removeItem(Item item) {
         if (item == null)
-            throw new IllegalArgumentException("Item cannot be null.");
+            throw new IllegalArgumentException("equipment.Item cannot be null.");
 
         if (!items.contains(item))
-            throw new IllegalStateException("Item not in inventory.");
+            throw new IllegalStateException("equipment.Item not in inventory.");
 
         items.remove(item);
     }
@@ -252,7 +259,7 @@ public class Inventory {
         String stream = "";
 
         for (Item item : items)
-            stream += "Item name: " + item.getName() + "\n";
+            stream += "equipment.Item name: " + item.getName() + "\n";
 
         return stream;
     }
@@ -269,16 +276,21 @@ A classe `Adventurer` representa a entidade do jogador. Demonstra:
 * **Associação:** interage com `Quest` e `Reward` por meio de seus métodos de execução de missões e recebimento de recompensas.
 
 ```java
-public class Adventurer {
+import equipment.Inventory;
+import quests.Reward;
+
+public class entities.
+
+Adventurer {
     private String name;
     private int energy;
     private int level;
     private int coins;
     private Inventory inventory;
 
-    public Adventurer(String name, int coins) {
+    public entities.Adventurer(String name, int coins){
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Adventurer name cannot be empty or null.");
+            throw new IllegalArgumentException("entities.Adventurer name cannot be empty or null.");
         }
         if (coins < 0) {
             throw new IllegalArgumentException("Moedas não podem ser negativas.");
@@ -292,38 +304,38 @@ public class Adventurer {
         this.inventory = new Inventory();
     }
 
-    public String getName() {
+    public String getName () {
         return name;
     }
 
-    public int getLevel() {
+    public int getLevel () {
         return level;
     }
 
-    public int getCoins() {
+    public int getCoins () {
         return this.coins;
     }
 
-    public int getEnergy() {
+    public int getEnergy () {
         return this.energy;
     }
 
-    public Inventory getInventory() {
+    public Inventory getInventory () {
         return inventory;
     }
 
-    public void dialogue() {
+    public void dialogue () {
         System.out.println("Talking...");
     }
 
-    public void receiveReward(Reward r) {
+    public void receiveReward (Reward r){
         if (r.getItemReward() != null) {
             this.inventory.insertItem(r.getItemReward());
         }
         this.coins += r.getCoin();
     }
 
-    public void completeQuest(Quest quest) {
+    public void completeQuest (Quest quest){
         if (quest == null) {
             throw new IllegalArgumentException("Mission Invalid.");
         }

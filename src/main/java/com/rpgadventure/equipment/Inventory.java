@@ -1,3 +1,5 @@
+package equipment;
+
 import java.util.ArrayList;
 
 public class Inventory {
@@ -10,7 +12,7 @@ public class Inventory {
 
     public void insertItem(Item item) {
         if (item == null)
-            throw new IllegalArgumentException("Item cannot be null.");
+            throw new IllegalArgumentException("equipment.Item cannot be null.");
 
         if (items.size() < maxCapacity)
             items.add(item);
@@ -18,10 +20,10 @@ public class Inventory {
 
     public void removeItem(Item item) {
         if (item == null)
-            throw new IllegalArgumentException("Item cannot be null.");
+            throw new IllegalArgumentException("equipment.Item cannot be null.");
 
         if (!items.contains(item))
-            throw new IllegalStateException("Item not in inventory.");
+            throw new IllegalStateException("equipment.Item not in inventory.");
 
         items.remove(item);
     }
@@ -35,7 +37,7 @@ public class Inventory {
         String stream = "";
 
         for (Item item : items)
-            stream += "Item name: " + item.getName() + "\n";
+            stream += "equipment.Item name: " + item.getName() + "\n";
 
         return stream;
     }
