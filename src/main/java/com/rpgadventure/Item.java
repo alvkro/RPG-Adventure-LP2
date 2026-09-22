@@ -1,4 +1,4 @@
-public final class Item {
+public abstract class Item {
     private final String name;
     private final ItemType type;
     private final Rarity rarity;
