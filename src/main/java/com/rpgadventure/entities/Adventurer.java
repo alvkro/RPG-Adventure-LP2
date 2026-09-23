@@ -1,4 +1,5 @@
 package entities;
+
 import equipment.*;
 import quests.*;
 
@@ -7,9 +8,11 @@ public class Adventurer extends Entity {
     private int energy;
     private int level;
     private int coins;
-    private Inventory inventory;
+    private Inventory<Item> inventory;
 
-    public Adventurer(String name, int coins) { super (name, coins); }
+    public Adventurer(String name, int coins) {
+        super(name, coins);
+    }
 
     public void dialogue() {
         System.out.println("Talking...");

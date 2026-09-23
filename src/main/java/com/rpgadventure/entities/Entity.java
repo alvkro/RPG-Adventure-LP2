@@ -1,4 +1,5 @@
 package entities;
+
 import equipment.*;
 
 public abstract class Entity {
@@ -6,7 +7,7 @@ public abstract class Entity {
     private int damage;
     private int life;
     private int level;
-    private Inventory inventory;
+    private Inventory<Item> inventory;
     private int energy;
     private int coins;
 
@@ -23,28 +24,43 @@ public abstract class Entity {
         this.life = 100;
         this.energy = 0;
         this.damage = 10;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory<Item>();
         this.coins = coins;
     }
 
-    public void heal(int amount_heal){ this.life += amount_heal; }
-    public void recieveDmg(int amount_dmg) { this.life -= amount_dmg; }
+    public void heal(int amount_heal) {
+        this.life += amount_heal;
+    }
+
+    public void recieveDmg(int amount_dmg) {
+        this.life -= amount_dmg;
+    }
 
     public String getName() {
         return name;
     }
-    public int getLife() { return life; }
+
+    public int getLife() {
+        return life;
+    }
+
     public int getLevel() {
         return level;
     }
+
     public int getCoins() {
         return this.coins;
     }
+
     public int getEnergy() {
         return this.energy;
     }
-    public Inventory getInventory() {
+
+    public Inventory<Item> getInventory() {
         return inventory;
     }
-    public int getDamage() { return damage; }
+
+    public int getDamage() {
+        return damage;
+    }
 }
