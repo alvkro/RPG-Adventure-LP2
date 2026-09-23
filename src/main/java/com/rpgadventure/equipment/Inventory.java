@@ -19,7 +19,7 @@ public class Inventory<T> {
             items.add(item);
     }
 
-    public void removeItem(Item item) {
+    public void removeItem(T item) {
         if (item == null)
             throw new IllegalArgumentException("equipment.Item cannot be null.");
 
@@ -29,7 +29,7 @@ public class Inventory<T> {
         items.remove(item);
     }
 
-    public boolean hasItem(Item item) {
+    public boolean hasItem(T item) {
         return items.contains(item);
     }
 
