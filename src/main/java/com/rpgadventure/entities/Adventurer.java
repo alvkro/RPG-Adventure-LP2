@@ -1,5 +1,8 @@
 package entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import equipment.*;
 import quests.*;
 
@@ -9,9 +12,11 @@ public class Adventurer extends Entity {
     private int level;
     private int coins;
     private Inventory<Item> inventory;
+    private Set<Quest> activeQuests;
 
     public Adventurer(String name, int coins) {
         super(name, coins);
+        this.activeQuests = new HashSet<>();
     }
 
     public void dialogue() {
