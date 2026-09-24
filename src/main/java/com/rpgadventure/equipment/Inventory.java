@@ -1,14 +1,14 @@
 package equipment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Inventory<T> {
     private final int maxCapacity = 40;
-    private List<T> items;
+    private Map<String, T> items;
 
     public Inventory() {
-        this.items = new ArrayList<>();
+        this.items = new HashMap<>();
     }
 
     public void insertItem(T item) {
@@ -16,28 +16,28 @@ public class Inventory<T> {
             throw new IllegalArgumentException("equipment.Item cannot be null.");
 
         if (items.size() < maxCapacity)
-            items.add(item);
+            items.put(item.toString(), item);
     }
 
     public void removeItem(T item) {
         if (item == null)
             throw new IllegalArgumentException("equipment.Item cannot be null.");
 
-        if (!items.contains(item))
+        if (!items.containsKey(item.toString()))
             throw new IllegalStateException("equipment.Item not in inventory.");
 
-        items.remove(item);
+        items.remove(item.toString());
     }
 
     public boolean hasItem(T item) {
-        return items.contains(item);
+        return items.containsKey(item.toString());
     }
 
     @Override
     public String toString() {
         String stream = "";
 
-        for (T item : items)
+        for (T item : items.values())
             stream += "equipment.Item name: " + item.toString() + "\n";
 
         return stream;
