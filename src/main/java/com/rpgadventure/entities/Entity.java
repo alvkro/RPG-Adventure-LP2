@@ -30,10 +30,20 @@ public abstract class Entity {
 
     public void heal(int amount_heal) {
         this.life += amount_heal;
+        if (this.life > 100) {
+            this.life = 100;
+        }
     }
 
-    public void recieveDmg(int amount_dmg) {
+    public void receiveDmg(int amount_dmg) {
         this.life -= amount_dmg;
+        if (this.life < 0) {
+            this.life = 0;
+        }
+    }
+
+    public void addCoins(int amount) {
+        this.coins += amount;
     }
 
     public String getName() {
