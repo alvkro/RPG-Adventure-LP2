@@ -1,5 +1,7 @@
 package equipment;
 
+import java.util.Objects;
+
 public abstract class Item {
     private final String name;
     private final ItemType type;
@@ -33,7 +35,7 @@ public abstract class Item {
         return rarity;
     }
 
-    @override
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

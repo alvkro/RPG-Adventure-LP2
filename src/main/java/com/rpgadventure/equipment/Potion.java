@@ -1,5 +1,7 @@
 package equipment;
 
+import entities.*;
+
 public class Potion extends Item implements Usable {
     private final int amount_heal;
 
