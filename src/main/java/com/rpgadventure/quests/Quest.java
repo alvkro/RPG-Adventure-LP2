@@ -2,6 +2,9 @@ package quests;
 
 import equipment.Inventory;
 import equipment.Item;
+
+import java.util.Objects;
+
 import entities.enemies.Enemy;
 
 public class Quest {
@@ -68,6 +71,27 @@ public class Quest {
 
     public QuestState getQuestState() {
         return questState;
+    }
+
+    public Enemy getTargetEnemy() {
+        return targetEnemy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Quest quest = (Quest) obj;
+        return Objects.equals(this.title, quest.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.title);
     }
 
     @Override
