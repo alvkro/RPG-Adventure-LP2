@@ -32,4 +32,24 @@ public abstract class Item {
     public Rarity getRarity() {
         return rarity;
     }
+
+    @override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Item otherItem = (Item) obj;
+    
+        return Objects.equals(this.name, otherItem.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name);
+    }
 }

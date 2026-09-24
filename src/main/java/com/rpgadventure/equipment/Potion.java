@@ -1,18 +1,18 @@
 package equipment;
 
 public class Potion extends Item implements Usable {
-    private final int treatment;
+    private final int amount_heal;
 
-    public Potion(String name, ItemType type, Rarity rarity, int treatment){
+    public Potion(String name, ItemType type, Rarity rarity, int amount_heal){
         super(name, type, rarity);
-        if (treatment < 0) {
-            throw new IllegalArgumentException("Potion treatment cannot be negative.");
+        if (amount_heal < 0) {
+            throw new IllegalArgumentException("Potion amount_heal cannot be negative.");
         }
-        this.treatment = treatment;
+        this.amount_heal = amount_heal;
     }
 
     @Override
-    public void usar(Personagem personagem) {
-        personagem.receberCura(treatment);
+    public void use(Entity entity) {
+        entity.heal(amount_heal);
     }
 }
