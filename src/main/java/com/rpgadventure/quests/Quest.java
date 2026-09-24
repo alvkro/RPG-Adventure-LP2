@@ -2,15 +2,17 @@ package quests;
 
 import equipment.Inventory;
 import equipment.Item;
+import entities.enemies.Enemy;
 
 public class Quest {
     private final String title;
     private final String description;
     private final Reward reward;
     private final Item requiredItem;
+    private final Enemy targetEnemy;
     private QuestState questState = QuestState.AVAILABLE;
 
-    public Quest(String title, String description, Reward reward, Item required_item) {
+    public Quest(String title, String description, Reward reward, Item required_item, Enemy targetEnemy) {
         if (title == null || title.isBlank())
             throw new IllegalArgumentException("Title cannot be null or empty.");
 
@@ -18,6 +20,7 @@ public class Quest {
         this.description = description;
         this.reward = reward;
         this.requiredItem = required_item;
+        this.targetEnemy = targetEnemy;
     }
 
     public void obtainQuest() {
@@ -27,7 +30,7 @@ public class Quest {
         this.questState = QuestState.IN_PROGRESS;
     }
 
-    public Reward completeQuest(Inventory inventory) {
+    public Reward completeQuest(Inventory<Item> inventory) {
         if (this.questState != QuestState.IN_PROGRESS)
             throw new IllegalStateException("You cannot complete a mission you have not obtained.");
 

@@ -1,4 +1,8 @@
 package entities;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import equipment.*;
 import quests.*;
 
@@ -7,9 +11,13 @@ public class Adventurer extends Entity {
     private int energy;
     private int level;
     private int coins;
-    private Inventory inventory;
+    private Inventory<Item> inventory;
+    private Set<Quest> activeQuests;
 
-    public Adventurer(String name, int coins) { super (name, coins); }
+    public Adventurer(String name, int coins) {
+        super(name, coins);
+        this.activeQuests = new HashSet<>();
+    }
 
     public void dialogue() {
         System.out.println("Talking...");
