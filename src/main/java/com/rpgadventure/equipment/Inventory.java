@@ -62,4 +62,25 @@ public class Inventory<T> {
     public boolean hasItem(T item) {
         return items.containsKey(item);
     }
+
+    public java.util.Set<T> getItemsKeys() {
+        return this.items.keySet();
+    }
+
+    @Override
+    public String toString() {
+        if (items.isEmpty()) {
+            return "Inventory is empty.\n";
+        }
+
+        StringBuilder stream = new StringBuilder();
+
+        for (Map.Entry<T, Integer> entry : items.entrySet()) {
+            stream.append("Item: ").append(entry.getKey().toString())
+                    .append(" | Qtd: ").append(entry.getValue())
+                    .append("\n");
+        }
+
+        return stream.toString();
+    }
 }
