@@ -27,4 +27,8 @@ public final class Reward {
     public Item getItemReward() {
         return itemReward;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
