@@ -27,7 +27,15 @@ public class Adventurer extends Entity {
         boolean wasAdded = this.activeQuests.add(quest);
 
         if (wasAdded) {
-            System.out.println(">> New mission accepted: " + quest.getTitle());
+            // estado para IN_PROGRESS
+            try {
+                quest.obtainQuest();
+                System.out.println(">> New mission accepted: " + quest.getTitle());
+            } catch (IllegalStateException e) {
+                // Caso a missão já esteja concluída ou falha
+                System.out.println(">> Error accepting quest: " + e.getMessage());
+                this.activeQuests.remove(quest); // Desfaz a adição se deu erro
+            }
         } else {
             System.out.println(">> You already have this mission active!");
         }
