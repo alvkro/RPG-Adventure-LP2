@@ -1,351 +1,79 @@
-# Documentação Técnica: Estrutura Inicial do jogo
+# Documentação Técnica: Sistema de Aventura RPG
 
-Esta documentação detalha a implementação das estruturas iniciais do sistema 
-de aventura solo.
-
----
-
-## 1. Enums
-
-### A. `equipment.ItemType.java`
-
-Define os tipos de itens disponíveis no universo do jogo.
-
-```java
-public enum equipment.ItemType {
-    EQUIPMENT,
-    CONSUMABLE,
-    COLLECTIBLE
-}
-```
-
-### B. `equipment.Rarity.java`
-
-Representa a escala de poder e escassez dos itens do jogo.
-
-```java
-public enum equipment.Rarity {
-    COMMON,
-    RARE,
-    LEGENDARY
-}
-```
-
-### C. `quests.QuestState.java`
-
-Controla a máquina de estados que governa a execução e as transições das missões (Quests).
-
-```java
-public enum quests.QuestState {
-    AVAILABLE,
-    IN_PROGRESS,
-    COMPLETED
-}
-```
+Esta documentação detalha a implementação da arquitetura refatorada do sistema de aventura solo.
 
 ---
 
-## 2. Classes
+## 1. Arquitetura Base e Enums
 
-### Classe `Item`
-
-A classe `Item` foi modelada como um **Objeto Imutável (Value Object)**. Seus objetos existem de forma independente e participam de relações de **Agregação** com `Inventory`, `Quest` e `Reward`.
-
-```java
-public final class equipment.Item {
-    private final String name;
-    private final ItemType type;
-    private final Rarity rarity;
-
-    public equipment.Item(String name, ItemType type, Rarity rarity) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("equipment.Item name cannot be empty or null.");
-        }
-        if (type == null) {
-            throw new IllegalArgumentException("equipment.Item type cannot be null.");
-        }
-        if (rarity == null) {
-            throw new IllegalArgumentException("equipment.Item rarity cannot be null.");
-        }
-
-        this.name = name;
-        this.type = type;
-        this.rarity = rarity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ItemType getType() {
-        return type;
-    }
-
-    public Rarity getRarity() {
-        return rarity;
-    }
-}
-```
+Os enumeradores fundamentais foram mantidos para padronizar os estados e tipos no universo do jogo:
+*   **`ItemType`**: Define os tipos de itens disponíveis no universo do jogo.
+*   **`Rarity`**: Representa a escala de poder e escassez dos itens do jogo.
+*   **`QuestState`**: Controla a máquina de estados que governa a execução e as transições das missões (`AVAILABLE`, `IN_PROGRESS`, `COMPLETED`).
 
 ---
 
-### Classe `Reward`
+## 2. Hierarquia de Entidades (`entities`)
 
-A classe `Reward` representa a recompensa que um aventureiro obtém ao concluir um desafio. Possui uma **Agregação** com `Item` através do atributo `itemReward`.
+A estrutura de personagens foi reformulada para evitar redundância e promover o polimorfismo.
 
-```java
-import equipment.Item;
+### Classe Abstrata `Entity`
+Atua como o supertipo de qualquer ser vivo no jogo. Centraliza atributos comuns (nome, vida, dano, moedas e inventário) e métodos de modificação de estado (como `receiveDmg` e `heal`). Garante o encapsulamento, impedindo, por exemplo, que a vida fique negativa.
 
-public final class quests.Reward {
-    private final String description;
-    private final int coin;
-    private final Item itemReward;
-
-    public quests.Reward(String description, int coin, Item itemReward) {
-        if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("quests.Reward description cannot be empty or null.");
-        }
-        if (coin < 0) {
-            throw new IllegalArgumentException("Coin value cannot be negative.");
-        }
-
-        this.description = description;
-        this.coin = coin;
-        this.itemReward = itemReward;
-    }
-
-    public int getCoin() {
-        return coin;
-    }
-
-    public Item getItemReward() {
-        return itemReward;
-    }
-}
-```
+### Subclasses de `Entity`
+*   **`Adventurer`**: Representa a entidade do jogador principal. Agora utiliza os métodos e atributos herdados de `Entity`. Interage com missões (`Quest`) e gerencia um conjunto de missões ativas (`Set<Quest>`).
+*   **`Enemy`**: Classe abstrata que herda de `Entity`, forçando a implementação do método `attack()` por meio de polimorfismo.
+    *   **`Goblin` e `Skeleton`**: Subclasses concretas de `Enemy` que implementam seus próprios comportamentos e cálculos de dano no método de ataque.
 
 ---
 
-### Classe `Quest`
+## 3. Hierarquia de Equipamentos e Interfaces (`equipment`)
 
-A classe `Quest` representa missões que um aventureiro pode obter e completar. Demonstra:
-* **Agregação** com `Item` (`requiredItem`).
-* **Associação** com `Reward`.
-* **Associação** com `Inventory`, recebido via parâmetro no método `completeQuest`.
+A estrutura de itens deixou de ser uma classe final imutável para se tornar uma arquitetura extensível.
 
-```java
+### Classe Abstrata `Item`
+Define os atributos base de qualquer item (nome, tipo, raridade). Implementa obrigatoriamente os métodos `equals()` e `hashCode()` baseados no nome do item, permitindo o correto funcionamento dentro das coleções do Java.
 
-import equipment.Item;
+### Subclasses de `Item`
+*   **`Weapon`**: Equipamentos que provêm atributos de combate.
+*   **`Collectible`**: Itens de progressão (ex: "Goblin's Head") que não possuem ação direta, servindo puramente à herança.
+*   **`Potion`**: Implementa a interface `Usavel`, permitindo restaurar os atributos de uma entidade.
 
-public class quests.
-
-Quest {
-    private final String title;
-    private final String description;
-    private final Reward reward;
-    private final Item requiredItem;
-    private QuestState questState = QuestState.AVAILABLE;
-
-    public quests.Quest(String title, String description, Reward reward, Item required_item) {
-        if (title == null || title.isBlank())
-            throw new IllegalArgumentException("Title cannot be null or empty.");
-
-        this.title = title;
-        this.description = description;
-        this.reward = reward;
-        this.requiredItem = required_item;
-    }
-
-    public void obtainQuest () {
-        if (this.questState != QuestState.AVAILABLE)
-            throw new IllegalStateException("You cannot obtain this quest right now.");
-
-        this.questState = QuestState.IN_PROGRESS;
-    }
-
-    public Reward completeQuest (Inventory inventory){
-        if (this.questState != QuestState.IN_PROGRESS)
-            throw new IllegalStateException("You cannot complete a mission you have not obtained.");
-
-        if (!inventory.hasItem(requiredItem))
-            throw new IllegalStateException("Required item not yet obtained.");
-
-        this.questState = QuestState.COMPLETED;
-        inventory.removeItem(requiredItem);
-
-        return reward;
-    }
-
-    public void failQuest () {
-        if (this.questState != QuestState.IN_PROGRESS)
-            throw new IllegalStateException("Cannot fail a mission not in progress.");
-
-        this.questState = QuestState.FAILED;
-    }
-
-    public String getTitle () {
-        return title;
-    }
-
-    public String getDescription () {
-        return description;
-    }
-
-    public Reward getReward () {
-        return reward;
-    }
-
-    public Item getRequiredItem () {
-        return requiredItem;
-    }
-
-    public QuestState getQuestState () {
-        return questState;
-    }
-
-    @Override
-    public String toString () {
-        return "Title: " + this.title + "\nDescription: " + this.description
-                + "\nquests.Reward: " + this.reward + "\nRequired item: " + this.requiredItem
-                + "\nState: " + this.questState;
-    }
-}
-
-```
+### Interface `Usavel`
+Define o contrato `void usar(Entity entidade)`. Garante que apenas itens consumíveis possam interagir com o herói durante o loop de combate, disparando ações via casting polimórfico (`instanceof Usavel`).
 
 ---
 
-### Classe `Inventory`
+## 4. Sistema de Inventário Genérico e Coleções
 
-A classe `Inventory` gerencia os itens carregados. Demonstra:
-* **Composição** faz parte integral do ciclo de vida de `Adventurer`.
-* **Agregação** mantém a coleção `ArrayList<Item>`, onde os itens existem de forma independente.
+A classe `Inventory` passou a adotar *Generics* e mapas.
 
-```java
-import java.util.ArrayList;
-
-public class equipment.Inventory {
-    private final int maxCapacity = 40;
-    private ArrayList<Item> items;
-
-    public equipment.Inventory() {
-        this.items = new ArrayList<>();
-    }
-
-    public void insertItem(Item item) {
-        if (item == null)
-            throw new IllegalArgumentException("equipment.Item cannot be null.");
-
-        if (items.size() < maxCapacity)
-            items.add(item);
-    }
-
-    public void removeItem(Item item) {
-        if (item == null)
-            throw new IllegalArgumentException("equipment.Item cannot be null.");
-
-        if (!items.contains(item))
-            throw new IllegalStateException("equipment.Item not in inventory.");
-
-        items.remove(item);
-    }
-
-    public boolean hasItem(Item item) {
-        return items.contains(item);
-    }
-
-    @Override
-    public String toString() {
-        String stream = "";
-
-        for (Item item : items)
-            stream += "equipment.Item name: " + item.getName() + "\n";
-
-        return stream;
-    }
-}
-
-```
+### Classe `Inventory<T>`
+*   Em vez de manter uma coleção genérica onde os itens existem de forma independente em uma lista simples, agora utiliza um `Map<T, Integer>` (HashMap).
+*   **Stacking (Acúmulo):** Permite que itens com o mesmo `hashCode`/`equals` sejam agrupados no mesmo slot de memória, incrementando apenas o seu valor inteiro (quantidade).
+*   Trata automaticamente inserções e remoções baseadas na quantidade atual do slot.
 
 ---
 
-### Classe `Adventurer`
+## 5. Missões e Recompensas (`quests`)
 
-A classe `Adventurer` representa a entidade do jogador. Demonstra:
-* **Composição:** instancia e gerencia seu próprio `Inventory` no construtor.
-* **Associação:** interage com `Quest` e `Reward` por meio de seus métodos de execução de missões e recebimento de recompensas.
+### Classe `Quest` e `Reward`
+*   A classe `Reward` representa a recompensa que um aventureiro obtém ao concluir um desafio e possui uma agregação com um item de recompensa.
+*   A classe `Quest` representa missões que um aventureiro pode obter e completar, mantendo associação com um item requisito e com recompensas. Na versão refatorada, foi adicionado um alvo específico do tipo `Enemy`.
+*   A classe `Quest` agora possui `equals()` e `hashCode()` baseados em seu título, o que permite ao `Adventurer` armazená-las em um `HashSet<Quest>`. Isso elimina a possibilidade de duplicação de missões ativas e agiliza a busca.
 
-```java
-import equipment.Inventory;
-import quests.Reward;
+---
 
-public class entities.
+## 6. Tratamento de Exceções Customizadas
 
-Adventurer {
-    private String name;
-    private int energy;
-    private int level;
-    private int coins;
-    private Inventory inventory;
+*   **`ItemNotFoundException`**: Criada para modularizar erros de negócio, como a tentativa de usar um item não existente no inventário.
 
-    public entities.Adventurer(String name, int coins){
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("entities.Adventurer name cannot be empty or null.");
-        }
-        if (coins < 0) {
-            throw new IllegalArgumentException("Moedas não podem ser negativas.");
-        }
 
-        this.name = name;
-        this.coins = coins;
-        this.level = 1;
-        this.energy = 100;
+---
 
-        this.inventory = new Inventory();
-    }
+## 7. Parte principal (`Main`)
 
-    public String getName () {
-        return name;
-    }
-
-    public int getLevel () {
-        return level;
-    }
-
-    public int getCoins () {
-        return this.coins;
-    }
-
-    public int getEnergy () {
-        return this.energy;
-    }
-
-    public Inventory getInventory () {
-        return inventory;
-    }
-
-    public void dialogue () {
-        System.out.println("Talking...");
-    }
-
-    public void receiveReward (Reward r){
-        if (r.getItemReward() != null) {
-            this.inventory.insertItem(r.getItemReward());
-        }
-        this.coins += r.getCoin();
-    }
-
-    public void completeQuest (Quest quest){
-        if (quest == null) {
-            throw new IllegalArgumentException("Mission Invalid.");
-        }
-
-        Reward reward = quest.completeQuest(this.inventory);
-
-        if (reward != null) {
-            this.receiveReward(reward);
-        }
-    }
-}
-
-```
+A classe principal foi modificado para atender aos requisitos, que são o try-with-resource, instanciação das novas classes, uso das novas estruturas do inventário e de aventureiro, etc.
+*   **`try-with-resources`**: Implementado na instância do `Scanner` para garantir o fechamento automático da conexão com o *System.in*, evitando vazamentos de memória (memory leaks).
+*   **Tratamento de Entrada (`try-catch`)**: O motor de combate lida com `NumberFormatException` (entradas inválidas no menu numérico) e captura graciosamente as exceções customizadas lançadas pelo sistema de inventário.
+*   **Combate Dinâmico**: Aciona de forma cíclica o dano entre o `Adventurer` e o `Enemy`, resolvendo o fim da partida com base nos estados vitais dos objetos encadeados.
