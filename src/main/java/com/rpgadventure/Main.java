@@ -15,19 +15,31 @@ public class Main {
 
       // Instanciação de itens, recompensas e missões
 
-      Item goblinHead = new Collectible("Goblin's Head", ItemType.COLLECTIBLE, Rarity.COMMON);
-      Item healthPotion = new Potion("Health Potion", ItemType.CONSUMABLE, Rarity.COMMON, 50);
-      Item ironSword = new Weapon("Iron Sword", ItemType.EQUIPMENT, Rarity.RARE, 25);
+      Item goblinHead = new Collectible("Goblin's Head", ItemType.COLLECTIBLE, Rarity.COMMON); // Item de missão
+      Item skeletonBones = new Collectible("Skeleton's Bones", ItemType.COLLECTIBLE, Rarity.RARE); // Item de missão
 
-      Reward questReward = new Reward("quests.Quest quests.Reward", 150, ironSword);
+      Item healthPotion = new Potion("Health Potion", ItemType.CONSUMABLE, Rarity.COMMON, 50); // Item de cura
+      Item ironSword = new Weapon("Iron Sword", ItemType.EQUIPMENT, Rarity.RARE, 25); // Item de ataque
+
+      Reward clearCaveReward = new Reward("Clear the cave with the goblin", 150, ironSword);
+      Reward defeatSkeletonReward = new Reward("Defeat the skeleton", 200, null);
+
       Enemy goblin = new Goblin("Evil goblin", 50);
+      Enemy skeleton = new Skeleton("Morbid skeleton", 60);
 
       Quest clearCave = new Quest(
           "Clear The Cave",
           "Kill the evil goblin in the cave and bring its head as proof.",
-          questReward,
+          clearCaveReward,
           goblinHead,
           goblin);
+
+      Quest defeatSkeleton = new Quest(
+          "Defeat The Skeleton",
+          "Defeat the morbid skeleton in the dungeon and bring its bones as proof.",
+          defeatSkeletonReward,
+          skeletonBones,
+          skeleton);
 
       // Instanciação de um aventureiro
       System.out.print("> Please, enter your adventurer's name: ");
@@ -45,19 +57,44 @@ public class Main {
       // Adicionando o item Health Potion ao inventário do aventureiro
       adventurer.getInventory().insertItem(healthPotion);
 
-      boolean gameRunning = true;
+      // escolher missão
+      System.out.println("\n==================================");
+      System.out.println("AVAILABLE QUESTS:");
+      System.out.println("[1] " + clearCave.getTitle() + " (Difficulty: Normal)");
+      System.out.println("[2] " + defeatSkeleton.getTitle() + " (Difficulty: Hard)");
+      System.out.print("> Choose your quest: ");
+
+      String questChoice = scanner.nextLine();
+
+      // Variáveis assumirão o alvo escolhido
+      Enemy currentEnemy;
+      Quest currentQuest;
+      Item targetItem;
+
+      if (questChoice.equals("2")) {
+          currentEnemy = skeleton;
+          currentQuest = defeatSkeleton;
+          targetItem = skeletonBones;
+      } else {
+          // Se o jogador digitar 1 (ou qualquer outra coisa inválida), assume a missão 1 por padrão
+          currentEnemy = goblin;
+          currentQuest = clearCave;
+          targetItem = goblinHead;
+      }
 
       // Aventureiro aceita a missão que fica na lista de missões ativas
-      adventurer.acceptQuest(clearCave);
+      adventurer.acceptQuest(currentQuest);
 
-      System.out.println("\n>> A wild " + goblin.getName() + " appears! Prepare for battle!");
+      System.out.println("\n>> A wild " + currentEnemy.getName() + " appears! Prepare for battle!");
+
+      boolean gameRunning = true;
 
       // Loop principal do Jogo
-      while (gameRunning && adventurer.getLife() > 0 && goblin.getLife() > 0) {
+      while (gameRunning && adventurer.getLife() > 0 && currentEnemy.getLife() > 0) {
 
         System.out.println("\n==================================");
         System.out.println(adventurer.getName() + " HP: " + adventurer.getLife());
-        System.out.println(goblin.getName() + " HP: " + goblin.getLife());
+        System.out.println(currentEnemy.getName() + " HP: " + currentEnemy.getLife());
         System.out.println("==================================");
         System.out.println("What will you do?");
         System.out.println("[1] Attack");
@@ -72,12 +109,12 @@ public class Main {
 
           if (choice == 1) {
             // Aventureiro ataca
-            System.out.println("\n> You attack the " + goblin.getName() + "!");
-            goblin.receiveDmg(adventurer.getDamage());
+            System.out.println("\n> You attack the " + currentEnemy.getName() + "!");
+            currentEnemy.receiveDmg(adventurer.getDamage());
 
-            // Se o goblin não morreu, ele revida
-            if (goblin.getLife() > 0) {
-              adventurer.receiveDmg(goblin.attack());
+            // Se o enemy não morreu, ele revida
+            if (currentEnemy.getLife() > 0) {
+              adventurer.receiveDmg(currentEnemy.attack());
             }
 
           } else if (choice == 2) {
@@ -106,15 +143,15 @@ public class Main {
       // Verifica o estado final do jogo e exibe a mensagem final
       if (adventurer.getLife() <= 0) {
         System.out.println("\n>>> YOU DIED! GAME OVER <<<");
-      } else if (goblin.getLife() <= 0) {
+      } else if (currentEnemy.getLife() <= 0) {
         System.out.println("\n>>> YOU WON THE BATTLE! <<<");
-        System.out.println("> You picked up the " + goblinHead.getName() + ".");
+        System.out.println("> You picked up the " + targetItem.getName() + ".");
 
-        adventurer.getInventory().insertItem(goblinHead);
+        adventurer.getInventory().insertItem(targetItem);
 
         System.out.println("\n> Returning to the village...");
 
-        adventurer.completeQuest(clearCave);
+        adventurer.completeQuest(currentQuest);
 
         System.out.println("\n> Final Hero Status:");
         System.out.println("Coins: " + adventurer.getCoins());
